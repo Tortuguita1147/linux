@@ -1,0 +1,160 @@
+=========================================
+VEYON CONTROL & SHUTDOWN GUIDE (LINUX)
+=========================================
+
+Sistema: Linux (systemd)
+Serviço: Veyon (remote monitoring/control)
+Objetivo: Parar, validar parada e verificar persistência
+=========================================
+
+
+=============================
+1. PARAR O SERVIÇO PRINCIPAL
+=============================
+
+sudo systemctl stop veyon.service
+
+
+=========================================
+2. IMPEDIR QUE VOLTE AUTOMATICAMENTE
+=========================================
+
+sudo systemctl disable veyon.service
+
+
+Opcional (mais forte - bloqueio total):
+----------------------------------------
+sudo systemctl mask veyon.service
+
+
+=========================================
+3. FINALIZAR PROCESSOS RESTANTES
+=========================================
+
+Ver processos ativos:
+
+ps aux | grep -i veyon
+ps aux | grep -i x11vnc
+
+
+Matar manualmente se ainda existir:
+
+sudo pkill -f veyon
+sudo pkill -f x11vnc
+
+
+Ou por PID específico:
+
+sudo kill -9 <PID>
+
+
+=========================================
+4. VERIFICAR SE REALMENTE PAROU
+=========================================
+
+CHECK 1 - systemd:
+-------------------
+systemctl status veyon.service
+
+
+Esperado:
+---------
+inactive (dead) ou disabled
+
+
+CHECK 2 - processos:
+---------------------
+ps aux | grep -i veyon
+
+
+Esperado:
+---------
+apenas o comando grep
+
+
+CHECK 3 - portas abertas:
+-------------------------
+
+sudo ss -tulpn | grep 11100
+sudo ss -tulpn | grep 11200
+sudo ss -tulpn | grep 11300
+
+
+Esperado:
+---------
+nenhuma saída
+
+
+CHECK 4 - VNC (x11vnc):
+------------------------
+
+sudo ss -tulpn | grep 5900
+
+
+Esperado:
+---------
+nenhuma saída
+
+
+CHECK 5 - conexões ativas:
+--------------------------
+
+sudo ss -tnp | grep ESTAB
+
+
+Verificar se não existe:
+- 11100
+- 11200
+- veyon-server
+- x11vnc
+
+
+=========================================
+5. VERIFICAR LOGS (SE ESTAVA ATIVO)
+=========================================
+
+sudo journalctl -u veyon.service --no-pager
+
+ou:
+
+sudo journalctl -u veyon.service -f
+
+
+=========================================
+6. VERIFICAR SE A REDE AINDA ESTÁ EXPOSTA
+=========================================
+
+sudo lsof -i -P -n | grep 11100
+sudo lsof -i -P -n | grep 11200
+sudo lsof -i -P -n | grep 11300
+
+
+Se NÃO aparecer nada → OK
+
+
+=========================================
+7. VERIFICAÇÃO FINAL (CHECKLIST)
+=========================================
+
+[ ] systemctl status = inactive
+[ ] ps não mostra veyon
+[ ] ps não mostra x11vnc relacionado ao veyon
+[ ] porta 11100 fechada
+[ ] porta 11200 fechada
+[ ] porta 11300 fechada
+[ ] ss não mostra ESTABLISHED veyon
+[ ] lsof não mostra veyon-server
+
+
+=========================================
+8. REATIVAR (CASO PRECISE)
+=========================================
+
+sudo systemctl unmask veyon.service
+sudo systemctl enable veyon.service
+sudo systemctl start veyon.service
+
+
+=========================================
+FIM DO DOCUMENTO
+=========================================
