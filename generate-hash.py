@@ -3,7 +3,7 @@ import crypt
 import secrets
 import string
 
-senha = "ifsp123"
+senha = "25102009Vi"
 
 alfabeto = string.ascii_letters + string.digits + "./"
 salt_random = ''.join(secrets.choice(alfabeto) for _ in range(24))
