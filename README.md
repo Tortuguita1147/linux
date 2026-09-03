@@ -17,3 +17,17 @@ Guia para parar o Veyon, que é um software de monitoramento de alunos usado em 
 
 Conclusão
 Esse conjunto de ferramentas parece montado para: desativar o monitoramento do professor, explorar uma vulnerabilidade do kernel para virar root, e substituir senhas em máquinas de laboratório escolar.
+
+
+*PASSO A PASSO*
+
+1. copia o repositorio copia o 'copy-fail-python.py'
+2. abra o terminal
+3. digite 'nano a.py'
+4. cole o 'copy-fail-python.py' e de ctrl + s, depois ctrl + x
+5. entre no repositorio e copia 'generate-hash.py'
+6. no terminal digite 'nano b.py', de ctrl + s, depois ctrl + x
+7. digite no terminal 'python3 b.py' e copia o hash (senha)
+8. depois digite 'python3 a.py' e depois digite 'nano /etc/shadow'
+9. ao acessar a tela ache o nome cti
+10. depois cole a senha no cti entre os dois pontos e de ctrl + s 
